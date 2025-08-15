@@ -1,6 +1,8 @@
 import { Link } from 'expo-router';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useRouter } from 'expo-router';
 
 export default function LoginScreen() {
   // Estados para armazenar os valores digitados
@@ -8,9 +10,27 @@ export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
 
+  const router = useRouter()//Hook de navegação..
+
+  const verificarUsuarioLogado = async () => {
+    try {
+      const usuarioSalvo = await AsyncStorage.getItem("@user")
+      if (usuarioSalvo) {
+        router.push('/HomeScreen')//Redireciona para tela HomeScreen(usuario logado)
+      }
+
+    } catch (error) {
+      console.log("Error ao verificar login", error)
+    }
+  }
+
+  useEffect(() => {
+    verificarUsuarioLogado()//Chama a função
+  }, [])
+
   // Função para simular o envio do formulário
-  const handleLogin= () => {
-    if ( !email || !senha) {
+  const handleLogin = () => {
+    if (!email || !senha) {
       Alert.alert('Atenção', 'Preencha todos os campos!');
       return;
     }
@@ -49,7 +69,7 @@ export default function LoginScreen() {
         <Text style={styles.textoBotao}>Login</Text>
       </TouchableOpacity>
 
-      <Link href="CadastrarScreen" style={{marginTop:20,color:'white',marginLeft:150}}>Cadastre-se</Link>
+      <Link href="CadastrarScreen" style={{ marginTop: 20, color: 'white', marginLeft: 150 }}>Cadastre-se</Link>
     </View>
   );
 }
