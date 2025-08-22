@@ -49,6 +49,9 @@ export default function LoginScreen() {
       const errorCode = error.code;
       const errorMessage = error.message;
       console.log("Error:",errorMessage)
+      if(error.code==="auth/invalid-credential"){
+        Alert.alert("Atenção","E-mail ou senha incorretos, verifique.")
+      }
   });
   };
 

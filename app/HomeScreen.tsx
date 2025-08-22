@@ -48,7 +48,9 @@ export default function HomeScreen() {
         <SafeAreaView>
             <Text>Seja bem-vindo, vc está logado!!!</Text>
             <Button title="Realizar logoff" onPress={realizarLogoff}/>
+            <Button title="Alterar Senha" color="orange" onPress={()=>router.push("/AlterarSenhaScreen")}/>
             <Button title="Excluir" color="red" onPress={excluirConta}/>
+            
         </SafeAreaView>
 
     )

@@ -73,7 +73,7 @@ export default function AlterarSenhaScreen() {
 
       {/* Botão */}
       <TouchableOpacity style={styles.botao} onPress={handleAlterarSenha}>
-        <Text style={styles.textoBotao}>Cadastrar</Text>
+        <Text style={styles.textoBotao}>Alterar Senha</Text>
       </TouchableOpacity>
     </View>
   );
