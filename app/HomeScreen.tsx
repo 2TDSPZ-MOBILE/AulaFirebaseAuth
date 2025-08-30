@@ -1,5 +1,5 @@
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Text, Button, TextInput, StyleSheet, ActivityIndicator, FlatList } from "react-native";
+import { Text, Button, TextInput, StyleSheet, ActivityIndicator, FlatList, KeyboardAvoidingView, Platform } from "react-native";
 import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import ItemLoja from "../components/ItemLoja";
@@ -7,8 +7,11 @@ import { useEffect, useState } from "react";
 import { Alert } from "react-native";
 import { deleteUser } from "firebase/auth";
 import { auth, db, addDoc, collection, getDocs } from "../services/firebaseConfig";
+import ThemeToggleButton from "../src/components/ThemeToggleButton";
+import { useTheme } from "../src/context/ThemeContext";
 
 export default function HomeScreen() {
+    const{theme,colors} = useTheme()//Vai acessar os valores do tema
     const router = useRouter()
     const [nomeProduto, setNomeProduto] = useState('')
     interface Item {
@@ -88,8 +91,16 @@ export default function HomeScreen() {
     }, [listaItems])
 
     return (
-        <SafeAreaView style={styles.container}>
-            <Text>Seja bem-vindo, vc está logado!!!</Text>
+        <SafeAreaView style={[styles.container,
+            {backgroundColor:colors.backgroud}
+        ]}>
+            <KeyboardAvoidingView //Componente que se ajuste automaticamente o layout
+                style={styles.container}
+                behavior={Platform.OS==='ios'?'padding':'height'}
+                keyboardVerticalOffset={20}//descoloca o conteúdo em 20px
+            >            
+            <Text style={[{color:colors.text}]}>Seja bem-vindo, vc está logado!!!</Text>
+            <ThemeToggleButton />
             <Button title="Realizar logoff" onPress={realizarLogoff} />
             <Button title="Alterar Senha" color="orange" onPress={() => router.push("/AlterarSenhaScreen")} />
             <Button title="Excluir" color="red" onPress={excluirConta} />
@@ -117,7 +128,7 @@ export default function HomeScreen() {
                 onChangeText={(value) => setNomeProduto(value)}
                 onSubmitEditing={salvarItem}
             />
-
+        </KeyboardAvoidingView>
         </SafeAreaView>
 
     )
