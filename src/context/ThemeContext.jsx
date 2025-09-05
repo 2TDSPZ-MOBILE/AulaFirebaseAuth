@@ -24,13 +24,13 @@ export default function ThemeProvider({children}){
     //Definição das cores por tema
     const themeColors = {
         light:{
-            backgroud:'#fff',
+            background:'#fff',
             text:'#000',
             button:'#007',
             buttonText:'#fff'
         },
         dark:{
-            backgroud:'#121212',
+            background:'#121212',
             text:'#fff',
             button:'#59e067',
             buttonText:'#000'

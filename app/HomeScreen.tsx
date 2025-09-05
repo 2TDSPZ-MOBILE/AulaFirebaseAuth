@@ -2,11 +2,11 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Text, Button, TextInput, StyleSheet, ActivityIndicator, FlatList, KeyboardAvoidingView, Platform } from "react-native";
 import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import ItemLoja from "../components/ItemLoja";
+import ItemLoja from "../src/components/ItemLoja";
 import { useEffect, useState } from "react";
 import { Alert } from "react-native";
 import { deleteUser } from "firebase/auth";
-import { auth, db, addDoc, collection, getDocs } from "../services/firebaseConfig";
+import { auth, db, addDoc, collection, getDocs } from "../src/services/firebaseConfig";
 import ThemeToggleButton from "../src/components/ThemeToggleButton";
 import { useTheme } from "../src/context/ThemeContext";
 
@@ -92,7 +92,7 @@ export default function HomeScreen() {
 
     return (
         <SafeAreaView style={[styles.container,
-            {backgroundColor:colors.backgroud}
+            {backgroundColor:colors.background}
         ]}>
             <KeyboardAvoidingView //Componente que se ajuste automaticamente o layout
                 style={styles.container}
