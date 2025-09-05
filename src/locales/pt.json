@@ -5,5 +5,7 @@
     "confirmDelete":"Tem certeza que deseja excluir a conta?",
     "cancel":"Cancelar",
     "delete":"Excluir",
-    "login":"Realizar o login"
+    "login":"Realizar o login",
+    "password":"Senha",
+    "register":"Cadastre-se"
 }

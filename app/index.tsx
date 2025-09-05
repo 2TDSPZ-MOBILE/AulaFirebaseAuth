@@ -11,8 +11,12 @@ import { useTranslation } from 'react-i18next';
 
 export default function LoginScreen() {
   //Hook que fornece a função 't' para tradução do idioma atual
-  const{t}=useTranslation()
+  const{t,i18n}=useTranslation()
 
+  //Função para mudar o idioma
+  const mudarIdioma = (lang:string)=>{
+    i18n.changeLanguage(lang)
+  }
 
   //Colors do nosso ThemeContext
   const{colors} = useTheme()
@@ -82,7 +86,7 @@ export default function LoginScreen() {
 
   return (
     <View style={[styles.container,{backgroundColor:colors.background}]}>
-      <Text style={[styles.titulo,{color:colors.text}]}>{t("login")}</Text>
+      <Text style={[styles.titulo,{color:colors.text}]}>{t("welcome")}</Text>
 
 
       {/* Campo Email */}
@@ -99,7 +103,7 @@ export default function LoginScreen() {
       {/* Campo Senha */}
       <TextInput
         style={[styles.input,{color:colors.text}]}
-        placeholder="Senha"
+        placeholder={t("password")}
         placeholderTextColor={colors.text}
         secureTextEntry
         value={senha}
@@ -111,9 +115,36 @@ export default function LoginScreen() {
         <Text style={styles.textoBotao}>Login</Text>
       </TouchableOpacity>
 
+      <View style={
+        {flexDirection:'row',
+         justifyContent:'center',
+         marginBottom:15}}>
+        <TouchableOpacity 
+          onPress={()=>mudarIdioma("en")}
+          style={[styles.botao,{backgroundColor:"#007bff"}]}
+        >
+          <Text>EN</Text>
+        </TouchableOpacity> 
+
+        <TouchableOpacity  
+          onPress={()=>mudarIdioma("pt")}
+           style={[styles.botao,{backgroundColor:"#14e641"}]}
+          >
+          <Text>PT</Text>
+        </TouchableOpacity> 
+
+        <TouchableOpacity  
+          onPress={()=>mudarIdioma("es")}
+           style={[styles.botao,{backgroundColor:"#e8ec0c"}]}
+          >
+          <Text>ES</Text>
+        </TouchableOpacity> 
+      </View>
+      
+
       <ThemeToggleButton />
 
-      <Link href="CadastrarScreen" style={{ marginTop: 20, color:colors.text, marginLeft: 150 }}>Cadastre-se</Link>
+      <Link href="CadastrarScreen" style={{ marginTop: 20, color:colors.text, marginLeft: 150 }}>{t("register")}</Link>
 
       <Text style={{ marginTop: 20, color:colors.text, marginLeft: 130 }} onPress={esqueceuSenha}>Esquece a senha</Text>
     </View>
@@ -146,6 +177,8 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 10,
     alignItems: 'center',
+    marginRight:10,
+    marginTop:10
   },
   textoBotao: {
     color: '#fff',

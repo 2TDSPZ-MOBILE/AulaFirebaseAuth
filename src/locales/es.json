@@ -1,5 +1,5 @@
 {
-    "welcome":"Welcome!!",
+    "welcome":"BienVenido a Aplication",
     "logout":"Log out",
     "deleteAccount":"Delete account",
     "confirmDelete":"Are you sure you want to delete your account?",
@@ -7,5 +7,5 @@
     "delete":"Delete",
     "login":"Log-in",
     "password":"Password",
-    "register":"Register"
+    "register":"Registro"
 }
