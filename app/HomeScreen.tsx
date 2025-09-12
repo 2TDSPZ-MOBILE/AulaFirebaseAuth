@@ -9,17 +9,31 @@ import { deleteUser } from "firebase/auth";
 import { auth, db, addDoc, collection, getDocs } from "../src/services/firebaseConfig";
 import ThemeToggleButton from "../src/components/ThemeToggleButton";
 import { useTheme } from "../src/context/ThemeContext";
+import * as Notifications from "expo-notifications"
+
+Notifications.setNotificationHandler({
+    handleNotification:async()=>({
+        shouldShowAlert:true,
+        shouldPlaySound:true, //toca o som
+        shouldSetBadge:false //Não altera o badge
+    })
+})
+
 
 export default function HomeScreen() {
     const{theme,colors} = useTheme()//Vai acessar os valores do tema
     const router = useRouter()
     const [nomeProduto, setNomeProduto] = useState('')
+    const[expoPushToken,setExpoPushToken]=useState<string|null>(null)
+
     interface Item {
         id: string,
         nomeProduto: string,
         isChecked: boolean
     }
     const [listaItems, setListaItems] = useState<Item[]>([])
+
+
 
     const realizarLogoff = async () => {
         await AsyncStorage.removeItem("@user")
@@ -86,6 +100,57 @@ export default function HomeScreen() {
         }
 
     }
+    //Função para disparar a notificação local
+    const dispararNotificacao = async()=>{
+        await Notifications.scheduleNotificationAsync({
+            content:{
+                title:"Promoções do dia!",
+                body:"Aproveite as melhores ofertas!!"
+            },
+            trigger:{
+                type:"timeInterval",//tipo de trigger: intervalo de tempo
+                seconds:2,//aguarda 02 segundos para disparar
+                repeats:false
+            } as Notifications.TimeIntervalTriggerInput
+        })
+    }
+
+    const registerForPushNotificationsAsync = async ():Promise<string|null> =>{
+        try{
+            const tokenData = await Notifications.getExpoPushTokenAsync()
+            const token  = tokenData.data
+            console.log("Token gerado com sucesso: ",token)
+            return token
+        }catch(error){
+            console.log("Error ao gerar token",error)
+            return null
+        }
+    }
+    useEffect(()=>{
+        //Ficar escutando se houve recebimento de notificação
+        const subscription = Notifications.addNotificationReceivedListener(notification =>{
+            console.log("Notificação recebida: ", notification)
+        })
+        //Função de limpeza que irá ser chamada quando for desfeito
+        //Remove o listener para evitar multiplas chamadas.
+        return ()=>subscription.remove()
+    },[])
+
+    useEffect(()=>{
+        //Solicitar a permissão das notificações do aparelho
+        (async()=>{
+            //Verificar o status da permissão de notificação do dispositivo
+            const{status:existingStatus} = await Notifications.getPermissionsAsync()
+            let finalStatus = existingStatus
+
+            //Solicita a permissão das notificações do dispositivo
+            if(existingStatus!=="granted"){
+                const{status} = await Notifications.requestPermissionsAsync()
+                finalStatus = status
+            }
+        })()
+    },[])
+
     useEffect(() => {
         buscarProdutos()
     }, [listaItems])
@@ -104,7 +169,7 @@ export default function HomeScreen() {
             <Button title="Realizar logoff" onPress={realizarLogoff} />
             <Button title="Alterar Senha" color="orange" onPress={() => router.push("/AlterarSenhaScreen")} />
             <Button title="Excluir" color="red" onPress={excluirConta} />
-
+            <Button title="Disparar notificação" color="purple" onPress={dispararNotificacao}/>
             
             {listaItems.length<=0?<ActivityIndicator/>:(
                 <FlatList
