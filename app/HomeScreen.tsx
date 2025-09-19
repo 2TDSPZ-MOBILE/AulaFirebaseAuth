@@ -1,10 +1,9 @@
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Text, Button, TextInput, StyleSheet, ActivityIndicator, FlatList, KeyboardAvoidingView, Platform } from "react-native";
+import { Alert,Text, Button, TextInput, StyleSheet, ActivityIndicator, FlatList, KeyboardAvoidingView, Platform } from "react-native";
 import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import ItemLoja from "../src/components/ItemLoja";
 import { useEffect, useState } from "react";
-import { Alert } from "react-native";
 import { deleteUser } from "firebase/auth";
 import { auth, db, addDoc, collection, getDocs } from "../src/services/firebaseConfig";
 import ThemeToggleButton from "../src/components/ThemeToggleButton";
@@ -13,7 +12,7 @@ import * as Notifications from "expo-notifications"
 
 Notifications.setNotificationHandler({
     handleNotification:async()=>({
-        shouldShowAlert:true,
+        shouldShowAlert:true, //SDK 52 usa Alert
         shouldPlaySound:true, //toca o som
         shouldSetBadge:false //Não altera o badge
     })
@@ -32,8 +31,6 @@ export default function HomeScreen() {
         isChecked: boolean
     }
     const [listaItems, setListaItems] = useState<Item[]>([])
-
-
 
     const realizarLogoff = async () => {
         await AsyncStorage.removeItem("@user")
@@ -108,7 +105,6 @@ export default function HomeScreen() {
                 body:"Aproveite as melhores ofertas!!"
             },
             trigger:{
-                type:"timeInterval",//tipo de trigger: intervalo de tempo
                 seconds:2,//aguarda 02 segundos para disparar
                 repeats:false
             } as Notifications.TimeIntervalTriggerInput
@@ -126,6 +122,17 @@ export default function HomeScreen() {
             return null
         }
     }
+
+    useEffect(()=>{
+        (async()=>{
+            //Registrar o disposito com o serviço de notificação (gerar o token)
+            const token = await registerForPushNotificationsAsync()
+            //Armazenar o token no estado
+            setExpoPushToken(token)
+        })()
+    },[])
+
+
     useEffect(()=>{
         //Ficar escutando se houve recebimento de notificação
         const subscription = Notifications.addNotificationReceivedListener(notification =>{
@@ -170,7 +177,11 @@ export default function HomeScreen() {
             <Button title="Alterar Senha" color="orange" onPress={() => router.push("/AlterarSenhaScreen")} />
             <Button title="Excluir" color="red" onPress={excluirConta} />
             <Button title="Disparar notificação" color="purple" onPress={dispararNotificacao}/>
-            
+            {expoPushToken?(
+                <Text>Token gerado com sucesso:{expoPushToken}</Text>):(
+                <Text>Gerando token...</Text>
+                )
+            }
             {listaItems.length<=0?<ActivityIndicator/>:(
                 <FlatList
                     data={listaItems}
@@ -195,7 +206,6 @@ export default function HomeScreen() {
             />
         </KeyboardAvoidingView>
         </SafeAreaView>
-
     )
 }
 
