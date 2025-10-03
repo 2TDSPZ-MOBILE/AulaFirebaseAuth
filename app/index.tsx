@@ -8,6 +8,7 @@ import {auth} from '../src/services/firebaseConfig'
 import { useTheme } from '../src/context/ThemeContext';
 import ThemeToggleButton from '../src/components/ThemeToggleButton';
 import { useTranslation } from 'react-i18next';
+import GoogleSignIn from "../src/components/GoogleSignIn"
 
 export default function LoginScreen() {
   //Hook que fornece a função 't' para tradução do idioma atual
@@ -140,8 +141,11 @@ export default function LoginScreen() {
           <Text>ES</Text>
         </TouchableOpacity> 
       </View>
-      
 
+      {/* Button para entrar na conta Google */}
+      <GoogleSignIn/>
+      
+      {/* Button para alternar entre os temas. */}
       <ThemeToggleButton />
 
       <Link href="CadastrarScreen" style={{ marginTop: 20, color:colors.text, marginLeft: 150 }}>{t("register")}</Link>

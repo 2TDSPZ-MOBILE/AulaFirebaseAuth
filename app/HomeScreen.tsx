@@ -9,6 +9,7 @@ import { auth, db, addDoc, collection, getDocs } from "../src/services/firebaseC
 import ThemeToggleButton from "../src/components/ThemeToggleButton";
 import { useTheme } from "../src/context/ThemeContext";
 import * as Notifications from "expo-notifications"
+import { useAuth } from "@clerk/clerk-expo";
 
 Notifications.setNotificationHandler({
     handleNotification:async()=>({
@@ -18,8 +19,9 @@ Notifications.setNotificationHandler({
     })
 })
 
-
 export default function HomeScreen() {
+    const{signOut,userId} = useAuth()
+    
     const{theme,colors} = useTheme()//Vai acessar os valores do tema
     const router = useRouter()
     const [nomeProduto, setNomeProduto] = useState('')
@@ -33,6 +35,7 @@ export default function HomeScreen() {
     const [listaItems, setListaItems] = useState<Item[]>([])
 
     const realizarLogoff = async () => {
+        await signOut()//Encerra sessão Clerk + Google
         await AsyncStorage.removeItem("@user")
         router.replace('/')
     }
